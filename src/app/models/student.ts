@@ -1,19 +1,17 @@
+import { Course } from "./course";
+
 export interface Student {
   id?: number;
   name: string;
-  email: string;
-  selectedCourses: Course[];
-}
-
-export interface Course {
-  id: number;
-  name: string;
-  credits: number;
-  professor: Professor;
-}
-
-export interface Professor {
-  id: number;
-  name: string;
   courses: Course[];
+}
+
+export class StudentSend {
+  name: string;
+  courseIds: number[];
+
+  constructor(name: string, courseIds: number[]) {
+    this.name = name;
+    this.courseIds = courseIds;
+  }
 }

@@ -1,0 +1,46 @@
+<div class="card">
+    <div class="card-body">
+      <h2 class="card-title mb-4">Lista de Estudiantes</h2>
+      
+      <div class="accordion" id="studentAccordion">
+        <!-- Lista de estudiantes -->
+        <div *ngFor="let student of students; trackBy: trackByStudentId" class="accordion-item mb-3">
+          <h3 class="accordion-header">
+            <button class="accordion-button collapsed" 
+                    type="button" 
+                    data-bs-toggle="collapse" 
+                    [attr.data-bs-target]="'#student-' + student.id">
+              {{ student.name }}
+            </button>
+          </h3>
+          <div [id]="'student-' + student.id" class="accordion-collapse collapse">
+            <div class="accordion-body">
+              <div class="mb-3">
+                <button class="btn btn-primary btn-sm me-2" [routerLink]="['/edit', student.id]">
+                  Editar
+                </button>
+                <button class="btn btn-danger btn-sm" (click)="deleteStudent(student.id!)">
+                  Eliminar
+                </button>
+              </div>
+              <h4 class="fw-bold">Materias:</h4>
+              <!-- Lista de cursos del estudiante -->
+              <div *ngFor="let course of student.courses; trackBy: trackByCourseId" class="mb-3">
+                <p class="fw-bold mb-1">{{ course.name }}</p>
+                <p class="text-muted">Profesor: {{ course.professors[0].name }}</p>
+                <p class="mb-1">Compañeros de clase:</p>
+                <!-- Lista de compañeros de clase -->
+                <ul class="list-group">
+                  <li *ngFor="let classmate of getClassmates(course, student); trackBy: trackByClassmateId" 
+                      class="list-group-item">
+                    {{ classmate.name }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

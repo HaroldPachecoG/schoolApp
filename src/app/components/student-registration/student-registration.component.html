@@ -1,0 +1,34 @@
+<div class="card">
+    <div class="card-body">
+      <h2 class="card-title mb-4">Registro de Estudiante</h2>
+      
+      <form (ngSubmit)="onSubmit()" #form="ngForm">
+        <mat-form-field appearance="outline">
+          <mat-label>Nombre</mat-label>
+          <input matInput [(ngModel)]="newStudent.name" name="name" required>
+        </mat-form-field>        
+        
+        <mat-label>Materias (Seleccione 3):</mat-label>
+        <mat-selection-list #courseList (selectionChange)="updateSelectedCourses($event)">
+          <mat-list-option *ngFor="let course of availableCourses"
+                          [value]="course"
+                          [disabled]="!canSelectCourse(course)">
+            {{ course.name }} - Prof. {{ course.professors[0]?.name || 'No disponible' }}
+          </mat-list-option>
+        </mat-selection-list>
+
+        <mat-error *ngIf="newStudent.name.trim() === ''">
+          El nombre es obligatorio
+        </mat-error>
+        <mat-error *ngIf="newStudent.courses.length !== 3">
+          Debe seleccionar exactamente 3 materias.
+        </mat-error>
+        
+        <button mat-raised-button color="primary" [disabled]="!isFormValid() || loading">
+          <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+          Registrar
+        </button>        
+      </form>
+    </div>
+  </div>
+  

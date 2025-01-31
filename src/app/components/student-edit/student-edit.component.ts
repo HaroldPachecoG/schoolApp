@@ -2,53 +2,21 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Student } from '../../models/student';
+import { Student, StudentSend } from '../../models/student';
 import { StudentService } from '../../services/student.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-student-edit',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  template: `
-    <div class="card">
-      <div class="card-body">
-        <h2 class="card-title mb-4">Editar Estudiante</h2>
-        
-        <form (ngSubmit)="onSubmit()" #form="ngForm" *ngIf="student">
-          <div class="mb-3">
-            <label class="form-label">Nombre:</label>
-            <input type="text" 
-                   class="form-control" 
-                   [(ngModel)]="student.name" 
-                   name="name" 
-                   required>
-          </div>
-          
-          <div class="mb-3">
-            <label class="form-label">Email:</label>
-            <input type="email" 
-                   class="form-control" 
-                   [(ngModel)]="student.email" 
-                   name="email" 
-                   required>
-          </div>
-
-          <div class="text-danger mb-3" *ngIf="error">{{ error }}</div>
-          
-          <button type="submit" class="btn btn-primary me-2">
-            Guardar
-          </button>
-          <button type="button" class="btn btn-secondary" (click)="cancel()">
-            Cancelar
-          </button>
-        </form>
-      </div>
-    </div>
-  `
+  templateUrl: './student-edit.component.html'
 })
 export class StudentEditComponent implements OnInit {
   student: Student | null = null;
   error = '';
+  send : StudentSend | null = null;
 
   constructor(
     private studentService: StudentService,
@@ -68,16 +36,40 @@ export class StudentEditComponent implements OnInit {
 
   onSubmit() {
     if (!this.student) return;
-    
-    if (!this.student.name.trim() || !this.student.email.trim()) {
-      this.error = 'Por favor complete todos los campos.';
+  
+    if (!this.student.name.trim()) {
+      this.error = 'Por favor ingrese el nombre del estudiante.';
       return;
     }
-    
-    this.studentService.updateStudent(this.student);
-    this.router.navigate(['/list']);
+    Swal.showLoading();
+    const courseIds = this.student.courses ? this.student.courses.map(course => course.id) : [];
+    this.send = new StudentSend(this.student.name, courseIds);
+    this.studentService.updateStudent(this.student.id!, this.send)
+      .subscribe({
+        next: () => {
+          Swal.hideLoading();
+          Swal.fire({
+            title: '¡Estudiante actualizado!',
+            text: 'La información del estudiante se actualizó correctamente.',
+            icon: 'success',
+            confirmButtonText: 'Aceptar'
+          }).then(() => {
+            this.router.navigate(['/list']);
+          });
+        },
+        error: (error: HttpErrorResponse) => {
+          Swal.hideLoading();
+          console.error('Error al actualizar el estudiante', error);
+          this.error = 'Hubo un problema al actualizar el estudiante.';
+          Swal.fire({
+            title: 'Error',
+            text: 'Hubo un problema al actualizar el estudiante.',
+            icon: 'error',
+            confirmButtonText: 'Aceptar'
+          });
+        }
+      });
   }
-
   cancel() {
     this.router.navigate(['/list']);
   }
