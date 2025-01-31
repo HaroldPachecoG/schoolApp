@@ -3,7 +3,6 @@
       <h2 class="card-title mb-4">Lista de Estudiantes</h2>
       
       <div class="accordion" id="studentAccordion">
-        <!-- Lista de estudiantes -->
         <div *ngFor="let student of students; trackBy: trackByStudentId" class="accordion-item mb-3">
           <h3 class="accordion-header">
             <button class="accordion-button collapsed" 
@@ -24,12 +23,10 @@
                 </button>
               </div>
               <h4 class="fw-bold">Materias:</h4>
-              <!-- Lista de cursos del estudiante -->
               <div *ngFor="let course of student.courses; trackBy: trackByCourseId" class="mb-3">
                 <p class="fw-bold mb-1">{{ course.name }}</p>
                 <p class="text-muted">Profesor: {{ course.professors[0].name }}</p>
                 <p class="mb-1">Compañeros de clase:</p>
-                <!-- Lista de compañeros de clase -->
                 <ul class="list-group">
                   <li *ngFor="let classmate of getClassmates(course, student); trackBy: trackByClassmateId" 
                       class="list-group-item">

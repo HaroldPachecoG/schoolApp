@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { Student } from '../models/student';
 import { HttpClient } from '@angular/common/http';
 import { Course } from '../models/course';
 
@@ -9,7 +8,7 @@ import { Course } from '../models/course';
 })
 export class CourseService {
   private courses: Course[] = [];
-  private apiUrl = 'https://localhost:7074/Courses'; // Reemplaza con la URL real de tu API
+  private apiUrl = 'https://localhost:7074/Courses';
   private coursesSubject = new BehaviorSubject<Course[]>([]);
   courses$ = this.coursesSubject.asObservable();
 
@@ -19,7 +18,7 @@ export class CourseService {
   loadCourses(): void {
     this.http.get<Course[]>(this.apiUrl).subscribe(
       (courses) => {
-        this.coursesSubject.next(courses);  // Actualiza el observable
+        this.coursesSubject.next(courses);
       },
       (error) => {
         console.error('Error al cargar los cursos: ', error);
@@ -28,13 +27,12 @@ export class CourseService {
   }
 
   getCourses(): Observable<Course[]> {
-    return this.courses$;  // Regresa el Observable con los cursos
+    return this.courses$;
   }
 
   addStudent(student: { name: string; courseIds: number[] }): Observable<Course> {
     return this.http.post<Course>(this.apiUrl, student).pipe(
       tap((newStudent) => {
-        // Ejecutar la lógica local después de un consumo exitoso
         newStudent.id = this.courses.length + 1;
         this.courses.push(newStudent);
         this.coursesSubject.next([...this.courses]);

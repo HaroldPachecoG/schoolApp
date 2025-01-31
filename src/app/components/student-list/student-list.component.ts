@@ -19,15 +19,13 @@ export class StudentListComponent implements OnInit {
   constructor(private studentService: StudentService) {}
 
   ngOnInit(): void {
-    this.studentService.loadStudents();  // Carga los estudiantes desde la API
-
-    // Nos suscribimos al Observable para recibir los estudiantes
+    this.studentService.loadStudents();
     this.studentService.getStudents().subscribe(
       (students) => {
         this.students = students;
       },
       (error) => {
-        console.error('Error al cargar los estudiantes: ', error);  // Manejo de error
+        console.error('Error al cargar los estudiantes: ', error);
       }
     );
   }
@@ -77,14 +75,14 @@ export class StudentListComponent implements OnInit {
   }
 
   trackByStudentId(index: number, student: Student): number {
-    return student.id!; // Usar el ID único del estudiante
+    return student.id!;
   }
 
   trackByCourseId(index: number, course: Course): number {
-    return course.id!; // Usar el ID único del curso
+    return course.id!;
   }
 
   trackByClassmateId(index: number, classmate: Student): number {
-    return classmate.id!; // Usar el ID único del compañero
+    return classmate.id!;
   }
 }

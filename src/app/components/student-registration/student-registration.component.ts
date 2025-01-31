@@ -7,13 +7,6 @@ import { StudentService } from '../../services/student.service';
 import { Course } from '../../models/course';
 import { CourseService } from '../../services/course.service';
 import Swal from 'sweetalert2';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSelectionListChange } from '@angular/material/core';
-
 
 @Component({
   selector: 'app-student-registration',
@@ -28,30 +21,22 @@ export class StudentRegistrationComponent {
   };
   availableCourses: Course[] = [];
   error = '';
-  loading = false;
 
   constructor(private studentService: StudentService,
     private courseService: CourseService
   ) {}
 
   ngOnInit(): void {
-    this.courseService.loadCourses();  // Carga los cursos desde la API
-
-    // Nos suscribimos al Observable para recibir los cursos
+    this.courseService.loadCourses();
     this.courseService.getCourses().subscribe(
       (courses) => {
-        this.availableCourses = courses;  // Asignamos los cursos al componente
+        this.availableCourses = courses;
       },
       (error) => {
-        console.error('Error al cargar los cursos: ', error);  // Manejo de error
+        console.error('Error al cargar los cursos: ', error);
       }
     );
   }
-
-  updateSelectedCourses(event: MatSelectionListChange) {
-    this.newStudent.courses = event.source.selectedOptions.selected.map(option => option.value);
-  }
-  
 
   isSelected(course: Course): boolean {
     return this.newStudent.courses.some(c => c.id === course.id);
@@ -97,15 +82,15 @@ export class StudentRegistrationComponent {
       name: this.newStudent.name,
       courseIds: this.newStudent.courses.map(course => course.id)
     };
-  
-    this.loading = true;
     Swal.showLoading();
-  
     this.studentService.addStudent(studentToSend).subscribe(() => {
-      this.newStudent = { name: '', courses: [] };
-      this.loading = false;
+      this.newStudent = {
+        name: '',
+        courses: []
+      };
+      this.error = '';
       Swal.close();
-      Swal.fire("Registro Exitoso", "El estudiante ha sido registrado", "success");
+      Swal.fire("","Se registro el estudiante de forma correcta","success");
     });
   }
   

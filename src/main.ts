@@ -6,12 +6,12 @@ import { StudentRegistrationComponent } from './app/components/student-registrat
 import { StudentListComponent } from './app/components/student-list/student-list.component';
 import { StudentEditComponent } from './app/components/student-edit/student-edit.component';
 import { NavMenuComponent } from './app/components/nav-menu/nav-menu.component';
-import { Routes } from '@angular/router'; // Importa el tipo Routes
+import { Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
-// Declarar las rutas con el tipo Routes
 const routes: Routes = [
-  { path: '', redirectTo: '/register', pathMatch: 'full' }, // 'full' es válido
+  { path: '', redirectTo: '/register', pathMatch: 'full' },
   { path: 'register', component: StudentRegistrationComponent },
   { path: 'list', component: StudentListComponent },
   { path: 'edit/:id', component: StudentEditComponent }
@@ -36,6 +36,6 @@ bootstrapApplication(App, {
   providers: [
     importProvidersFrom(HttpClientModule),
     provideAnimations(),
-    provideRouter(routes) // Configura las rutas
+    provideRouter(routes), provideAnimationsAsync(), provideAnimationsAsync()
   ]
 }).catch(err => console.error(err));

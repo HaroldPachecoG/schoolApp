@@ -11,7 +11,7 @@ export class StudentService {
   private students: Student[] = [];
   private studentsSubject = new BehaviorSubject<Student[]>([]);
   students$ = this.studentsSubject.asObservable();
-  private apiUrl = 'https://localhost:7074/Students'; // Reemplaza con la URL real de tu API
+  private apiUrl = 'https://localhost:7074/Students';
 
 
   constructor(private http: HttpClient) {}
@@ -19,7 +19,7 @@ export class StudentService {
   loadStudents(): void {
     this.http.get<Student[]>(this.apiUrl).subscribe(
       (students) => {
-        this.studentsSubject.next(students);  // Actualiza el observable
+        this.studentsSubject.next(students);
       },
       (error) => {
         console.error('Error al cargar los estudiantes: ', error);
@@ -34,7 +34,6 @@ export class StudentService {
   addStudent(student: { name: string; courseIds: number[] }): Observable<Student> {
     return this.http.post<Student>(this.apiUrl, student).pipe(
       tap((newStudent) => {
-        // Ejecutar la lógica local después de un consumo exitoso
         newStudent.id = this.students.length + 1;
         this.students.push(newStudent);
         this.studentsSubject.next([...this.students]);
@@ -58,7 +57,7 @@ deleteStudent(id: number): Observable<void> {
   return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
     tap(() => {
       this.students = this.students.filter(s => s.id !== id);
-      this.studentsSubject.next([...this.students]); // Emitir la nueva lista
+      this.studentsSubject.next([...this.students]);
     })
   );
 }  

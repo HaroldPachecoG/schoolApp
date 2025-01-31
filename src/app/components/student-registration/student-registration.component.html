@@ -3,31 +3,39 @@
       <h2 class="card-title mb-4">Registro de Estudiante</h2>
       
       <form (ngSubmit)="onSubmit()" #form="ngForm">
-        <mat-form-field appearance="outline">
-          <mat-label>Nombre</mat-label>
-          <input matInput [(ngModel)]="newStudent.name" name="name" required>
-        </mat-form-field>        
+        <div class="mb-3">
+          <label class="form-label">Nombre:</label>
+          <input type="text" 
+                 class="form-control" 
+                 [(ngModel)]="newStudent.name" 
+                 name="name" 
+                 required>
+        </div>
         
-        <mat-label>Materias (Seleccione 3):</mat-label>
-        <mat-selection-list #courseList (selectionChange)="updateSelectedCourses($event)">
-          <mat-list-option *ngFor="let course of availableCourses"
-                          [value]="course"
-                          [disabled]="!canSelectCourse(course)">
-            {{ course.name }} - Prof. {{ course.professors[0]?.name || 'No disponible' }}
-          </mat-list-option>
-        </mat-selection-list>
-
-        <mat-error *ngIf="newStudent.name.trim() === ''">
-          El nombre es obligatorio
-        </mat-error>
-        <mat-error *ngIf="newStudent.courses.length !== 3">
-          Debe seleccionar exactamente 3 materias.
-        </mat-error>
+        <div class="mb-3">
+          <label class="form-label">Materias (Seleccione 3):</label>
+          <div *ngIf="availableCourses?.length">
+            <div class="form-check" *ngFor="let course of availableCourses">
+              <input class="form-check-input" 
+                     type="checkbox"
+                     [id]="'course-' + course.id"
+                     [checked]="isSelected(course)"
+                     (change)="toggleCourse(course)"
+                     [disabled]="!canSelectCourse(course)">
+              <label class="form-check-label" [for]="'course-' + course.id">
+                {{ course.name || 'Nombre no disponible' }} - Prof. {{ course.professors[0].name || 'Profesor no disponible' }}
+              </label>
+            </div>
+          </div>
+        </div>
+  
+        <div class="text-danger mb-3" *ngIf="error">{{ error }}</div>
         
-        <button mat-raised-button color="primary" [disabled]="!isFormValid() || loading">
-          <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+        <button type="submit" 
+                class="btn btn-primary"
+                [disabled]="!isFormValid()">
           Registrar
-        </button>        
+        </button>
       </form>
     </div>
   </div>
